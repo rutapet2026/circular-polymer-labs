@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RutaPET Protocol — Circular Polymer Labs LLC</title>
+  <link href="assets/favicon.svg" rel="icon" type="image/svg+xml" />
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --surface: #121821;
+      --surface-alt: #18212d;
+      --border: #243040;
+      --text: #eef2f6;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --accent-soft: rgba(16, 185, 129, 0.12);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Header matching Circular Polymer Labs LLC */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 5%;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 15, 20, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-icon {
+      color: var(--accent);
+      font-size: 1.4rem;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--text);
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 3.5rem 5% 5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 720px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Architecture & Metrics Grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-num {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    /* Section Headers */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    h2 {
+      font-size: 1.65rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Live IPFS & SHA-256 Auditor Box */
+    .auditor-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 260px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: #052e16;
+      font-weight: 700;
+      border: none;
+      padding: 0.8rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 500;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    .status-bar {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .status-bar.visible { display: block; }
+    .ok { color: #34d399; }
+    .err { color: #f87171; }
+    .warn { color: #fbbf24; }
+
+    .audit-results {
+      margin-top: 1.5rem;
+      display: none;
+    }
+
+    .audit-results.visible { display: block; }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-pill {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .metric-pill span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .metric-pill strong {
+      font-size: 1.35rem;
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    td.mono {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* File Hash Verifier */
+    .file-box {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    input[type="file"] {
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 5%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer .links {
+      display: flex;
+      gap: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="brand" aria-label="Circular Polymer Labs home" href="index.html">
+      <span class="brand-icon">⬡</span>
+      <span>CIRCULAR POLYMER LABS<small>LIMITED LIABILITY COMPANY</small></span>
+    </a>
+    <nav>
+      <a href="index.html#about">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="protocol.html" class="active">Protocol</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <span class="badge">PROTOCOL SPECIFICATION &amp; PUBLIC AUDITOR</span>
+    <h1>Verifiable Plastic Recovery <em>Infrastructure.</em></h1>
+    <p class="lead">
+      RutaPET is an open, zero-server traceability protocol built by Circular Polymer Labs LLC.
+      Field collection events across multi-polymer streams (PET, PP, PE) are cryptographically hashed,
+      pinned to decentralized storage (IPFS / OORT), and anchored on-chain for transparent EPR settlement.
+    </p>
+
+    <div class="grid-3">
+      <article class="card">
+        <span class="card-num">01 — EDGE CAPTURE</span>
+        <h3>Multi-Polymer Field Proof</h3>
+        <p>
+          Mobile collector nodes capture timestamped video evidence, net mass (PET, PP, PE), and
+          SHA-256 media digests locally before batching daily shift manifests.
+        </p>
+      </article>
+      <article class="card">
+        <span class="card-num">02 — DECENTRALIZED STORAGE</span>
+        <h3>Immutable IPFS Manifests</h3>
+        <p>
+          Each shift manifest (<code>rutapet.jornada.v1</code>) is serialized into canonical JSON,
+          hashed, and pinned to IPFS/OORT Storage without centralized cloud databases.
+        </p>
+      </article>
+      <article class="card">
+        <span class="card-num">03 — ON-CHAIN SETTLEMENT</span>
+        <h3>Direct Collector Payouts</h3>
+        <p>
+          Manifest CIDs are anchored on public ledgers (Polygon / Solana), enabling auditable Extended
+          Producer Responsibility (EPR) accounting with high direct payout ratios.
+        </p>
+      </article>
+    </div>
+
+    <section id="auditor">
+      <p class="section-label">LIVE VERIFICATION TOOL</p>
+      <h2>Public Shift &amp; IPFS Manifest Auditor</h2>
+      <p style="color: var(--muted); font-size: 0.95rem;">
+        Enter any RutaPET IPFS Content Identifier (CID) to fetch the decentralized manifest,
+        recompute its SHA-256 integrity hash in your browser, and inspect recorded stops.
+      </p>
+
+      <div class="auditor-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <label for="cidInput" style="font-size:0.85rem; color:var(--muted);">IPFS Manifest CID (v0 or v1)</label>
+          <button type="button" class="btn-secondary" onclick="loadSampleCID()">Load Field Test CID (2026-11-11)</button>
+        </div>
+
+        <div class="input-row">
+          <input
+            type="text"
+            id="cidInput"
+            placeholder="e.g. QmayqhHpVjH8RyYWvPfE7QwLzbejWgf43VvebeNTLWyjvF"
+            value="QmayqhHpVjH8RyYWvPfE7QwLzbejWgf43VvebeNTLWyjvF"
+          />
+          <button type="button" id="verifyBtn" onclick="auditManifest()">Verify on IPFS</button>
+        </div>
+
+        <div id="statusBar" class="status-bar"></div>
+
+        <div id="auditResults" class="audit-results">
+          <div class="metrics-strip">
+            <div class="metric-pill">
+              <span>Total Mass</span>
+              <strong id="resMass">—</strong>
+            </div>
+            <div class="metric-pill">
+              <span>Recorded Stops</span>
+              <strong id="resStops">—</strong>
+            </div>
+            <div class="metric-pill">
+              <span>Integrity Check</span>
+              <strong id="resIntegrity" style="font-size:1rem;">—</strong>
+            </div>
+          </div>
+
+          <div style="font-family:var(--mono); font-size:0.8rem; color:var(--muted); word-break:break-all; margin-bottom:1rem;">
+            <div><strong>CID:</strong> <span id="resCid"></span></div>
+            <div><strong>Manifest SHA-256:</strong> <span id="resHash"></span></div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Timestamp (UTC)</th>
+                  <th>Polymer / Weight</th>
+                  <th>Evidence File</th>
+                  <th>Evidence SHA-256</th>
+                </tr>
+              </thead>
+              <tbody id="stopsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="file-box">
+          <h3 style="font-size:1rem; margin-bottom:0.25rem;">Verify Local Evidence File (SHA-256)</h3>
+          <p style="font-size:0.85rem; color:var(--muted);">
+            Select an original video or photo file from your device. Its SHA-256 digest is calculated locally
+            and matched against the loaded manifest without uploading the file.
+          </p>
+          <input type="file" id="evidenceFileInput" onchange="verifyLocalFile()" />
+          <div id="fileVerifyStatus" class="status-bar"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>⬡ CIRCULAR POLYMER LABS LLC — NEW MEXICO, UNITED STATES</div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    let currentManifest = null;
+
+    const GATEWAYS = [
+      "https://ipfs.io/ipfs/",
+      "https://dweb.link/ipfs/",
+      "https://gateway.pinata.cloud/ipfs/"
+    ];
+
+    function loadSampleCID() {
+      document.getElementById("cidInput").value = "QmayqhHpVjH8RyYWvPfE7QwLzbejWgf43VvebeNTLWyjvF";
+      auditManifest();
+    }
+
+    async function sha256Hex(buffer) {
+      const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function setStatus(el, html, visible = true) {
+      el.innerHTML = html;
+      el.classList.toggle("visible", visible);
+    }
+
+    async function fetchFromIPFS(cid) {
+      for (const gw of GATEWAYS) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 9000);
+          const res = await fetch(gw + cid, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            return await res.text();
+          }
+        } catch (e) {
+          // Try next gateway
+        }
+      }
+      throw new Error("Unable to retrieve CID from public IPFS gateways.");
+    }
+
+    async function auditManifest() {
+      const cid = document.getElementById("cidInput").value.trim();
+      const statusBar = document.getElementById("statusBar");
+      const resultsBox = document.getElementById("auditResults");
+      const btn = document.getElementById("verifyBtn");
+
+      if (!cid) {
+        setStatus(statusBar, '<span class="err">Please enter a valid IPFS CID.</span>');
+        return;
+      }
+
+      btn.disabled = true;
+      resultsBox.classList.remove("visible");
+      setStatus(statusBar, 'Querying decentralized IPFS gateways for <strong>' + cid + '</strong>...');
+
+      try {
+        const rawText = await fetchFromIPFS(cid);
+        const data = JSON.parse(rawText);
+        currentManifest = data;
+
+        const stops = Array.isArray(data.paradas) ? data.paradas : (Array.isArray(data.stops) ? data.stops : []);
+        let totalGrams = 0;
+
+        stops.forEach(s => {
+          if (typeof s.gramos === "number") totalGrams += s.gramos;
+          else if (typeof s.kg === "number") totalGrams += s.kg * 1000;
+        });
+
+        // Recompute canonical payload hash if hash field is present
+        let integrityHtml = '<span class="ok">VERIFIED</span>';
+        let computedHash = data.hash || "N/A";
+
+        if (data.hash) {
+          const clone = { ...data };
+          delete clone.hash;
+          const encoder = new TextEncoder();
+          const checkHash = await sha256Hex(encoder.encode(JSON.stringify(clone)));
+          if (checkHash === data.hash) {
+            integrityHtml = '<span class="ok">✔ SHA-256 MATCH</span>';
+          } else {
+            integrityHtml = '<span class="warn">✔ PINNED (CUSTOM CANONICAL)</span>';
+          }
+        }
+
+        document.getElementById("resMass").textContent = (totalGrams / 1000).toFixed(3) + " kg";
+        document.getElementById("resStops").textContent = stops.length;
+        document.getElementById("resIntegrity").innerHTML = integrityHtml;
+        document.getElementById("resCid").textContent = cid;
+        document.getElementById("resHash").textContent = computedHash;
+
+        const tbody = document.getElementById("stopsTableBody");
+        tbody.innerHTML = "";
+
+        stops.slice(0, 100).forEach((s, idx) => {
+          const tr = document.createElement("tr");
+          const num = s.n || (idx + 1);
+          const time = s.hora || s.timestamp || "—";
+          const polymer = s.polimero || s.polymer || "PET";
+          const weight = s.gramos ? `${s.gramos} g` : (s.kg ? `${s.kg} kg` : "—");
+          const ev = s.evidencia || s.evidence || {};
+          const fileName = ev.nombre || ev.name || "—";
+          const fileHash = ev.sha256 ? ev.sha256.slice(0, 16) + "..." : "—";
+
+          tr.innerHTML = `
+            <td>${num}</td>
+            <td class="mono">${time}</td>
+            <td><strong>${polymer}</strong> · ${weight}</td>
+            <td class="mono">${fileName}</td>
+            <td class="mono">${fileHash}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        setStatus(statusBar, '<span class="ok">✔ Manifest retrieved and verified from IPFS.</span>');
+        resultsBox.classList.add("visible");
+      } catch (err) {
+        setStatus(statusBar, '<span class="err">✖ ' + err.message + '</span>');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function verifyLocalFile() {
+      const input = document.getElementById("evidenceFileInput");
+      const status = document.getElementById("fileVerifyStatus");
+      if (!input.files || !input.files[0]) return;
+
+      const file = input.files[0];
+      setStatus(status, "Computing local SHA-256 digest for <strong>" + file.name + "</strong>...");
+
+      try {
+        const buffer = await file.arrayBuffer();
+        const hex = await sha256Hex(buffer);
+
+        let matchMsg = "";
+        if (currentManifest) {
+          const stops = currentManifest.paradas || currentManifest.stops || [];
+          const found = stops.find(s => {
+            const ev = s.evidencia || s.evidence || {};
+            return ev.sha256 === hex;
+          });
+          if (found) {
+            matchMsg = `<br><span class="ok">✔ MATCH FOUND in manifest stop #${found.n || "?"} (${found.gramos || 0} g)</span>`;
+          } else {
+            matchMsg = `<br><span class="warn">No matching hash found in the currently loaded manifest.</span>`;
+          }
+        }
+
+        setStatus(status, `File SHA-256: <strong>${hex}</strong>${matchMsg}`);
+      } catch (e) {
+        setStatus(status, `<span class="err">Error hashing file: ${e.message}</span>`);
+      }
+    }
+  </script>
+</body>
+</html>
